@@ -13,7 +13,7 @@ const AvailablePlaces = ({ onSelectPlace }: AvailablePlacesProps) => {
   const [availablePlaces, setAvailablePlaces] = useState<Place[]>([]);
 
   useEffect(() => {
-    fetch("http://localhost:2999/places")
+    fetch("http://localhost:8080/places")
       .then((response) => {
         return response.json();
       })
