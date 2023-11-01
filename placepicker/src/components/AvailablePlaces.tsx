@@ -18,9 +18,11 @@ const AvailablePlaces = ({ onSelectPlace }: AvailablePlacesProps) => {
         return response.json();
       })
       .then((responseData) => {
-        setAvailablePlaces(responseData.places);
+        setAvailablePlaces(responseData);
       });
   }, []);
+
+  // test and check the value of available places TODO
 
   return (
     <Places

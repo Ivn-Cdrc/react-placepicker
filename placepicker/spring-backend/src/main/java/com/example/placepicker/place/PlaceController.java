@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,8 +18,9 @@ public class PlaceController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/places")
-    public List<Place> getPlaces(@PathVariable(required = false) String request)
+    public ResponseEntity<List<Place>> getPlaces(@PathVariable(required = false) String request)
         throws IOException {
-        return placeService.getPlaces();
+            List<Place> places = placeService.getPlaces();
+        return new ResponseEntity<>(places, HttpStatus.OK);
     }
 }
