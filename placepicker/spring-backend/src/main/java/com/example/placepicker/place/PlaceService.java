@@ -1,5 +1,6 @@
 package com.example.placepicker.place;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -11,6 +12,12 @@ public class PlaceService {
     @Autowired PlaceRepository placeRepository;
 
     public List<Place> getPlaces() throws IOException {
-        return placeRepository.getPlaces();
+        List<Place> places = placeRepository.getPlaces();
+        
+        if(places == null) {
+            throw new FileNotFoundException("resource [places.json] cannot be resolved");
+        }
+
+        return places;
     }
 }
