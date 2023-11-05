@@ -28,12 +28,9 @@ public class PlaceRepository {
     public List<Place> getPlaces() throws IOException {
         List<Place> placesList;
 
-        try {
-            File file = placesResource.getFile();
-            placesList = mapper.readValue(file, new TypeReference<>(){});
-        } catch(FileNotFoundException ex) {
-            placesList = null;
-        }
+        // if exception is thrown, controller advice will catch it.
+        File file = placesResource.getFile();
+        placesList = mapper.readValue(file, new TypeReference<>(){});
         
         return placesList;
     }

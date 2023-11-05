@@ -18,9 +18,14 @@ public class PlaceController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/places")
-    public ResponseEntity<List<Place>> getPlaces(@PathVariable(required = false) String request)
-        throws IOException {
-            List<Place> places = placeService.getPlaces();
-        return new ResponseEntity<>(places, HttpStatus.OK);
+    public ResponseEntity<List<Place>> getPlaces(
+        @PathVariable(required = false) String request) throws IOException {
+        List<Place> places = placeService.getPlaces();
+        
+        if(places.isEmpty() == true) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(places);
+        }
     }
 }

@@ -12,12 +12,6 @@ public class PlaceService {
     @Autowired PlaceRepository placeRepository;
 
     public List<Place> getPlaces() throws IOException {
-        List<Place> places = placeRepository.getPlaces();
-        
-        if(places == null) {
-            throw new FileNotFoundException("resource [places.json] cannot be resolved");
-        }
-
-        return places;
+        return placeRepository.getPlaces();
     }
 }
