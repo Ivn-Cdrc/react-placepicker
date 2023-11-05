@@ -24,6 +24,9 @@ public class PlaceRepository {
 
     @Value("classpath:places.json")
     Resource placesResource;
+
+    @Value("classpath:user-places.json")
+    Resource userPlacesResource;
     
     public List<Place> getPlaces() throws IOException {
         List<Place> placesList;
@@ -33,5 +36,14 @@ public class PlaceRepository {
         placesList = mapper.readValue(file, new TypeReference<>(){});
         
         return placesList;
+    }
+
+    public List<Place> getUserPlaces() throws IOException {
+        List<Place> userPlacesList;
+
+        File file = userPlacesResource.getFile();
+        userPlacesList = mapper.readValue(file, new TypeReference<>(){});
+
+        return userPlacesList;
     }
 }

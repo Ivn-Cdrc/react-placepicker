@@ -14,4 +14,8 @@ public class PlaceService {
     public List<Place> getPlaces() throws IOException {
         return placeRepository.getPlaces();
     }
+
+    public List<Place> getUserPlaces() throws IOException {
+        return placeRepository.getUserPlaces();
+    }
 }
