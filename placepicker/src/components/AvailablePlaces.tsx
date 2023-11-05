@@ -22,8 +22,6 @@ const AvailablePlaces = ({ onSelectPlace }: AvailablePlacesProps) => {
       });
   }, []);
 
-  // test and check the value of available places TODO
-
   return (
     <Places
       title="Available Places"

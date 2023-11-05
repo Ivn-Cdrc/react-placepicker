@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class PlaceRepository {
     private ObjectMapper mapper = new ObjectMapper();
 
+    // automatically looks in the /resources directory
     @Value("classpath:places.json")
     Resource placesResource;
 
