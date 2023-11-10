@@ -7,8 +7,8 @@ export interface Place {
   id: string;
   title: string;
   image: Image;
-  lat: string;
-  lon: string;
+  lat: number;
+  lon: number;
 }
 
 interface PlacesProps {

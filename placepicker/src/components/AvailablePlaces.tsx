@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Places from "./Places";
 import { Place } from "./Places";
 import ErrorComponent from "./ErrorComponent";
+import { sortPlacesByDistance } from "../loc";
 
 interface AvailablePlacesProps {
   onSelectPlace: (place: Place) => void;
@@ -28,20 +29,32 @@ const AvailablePlaces = ({ onSelectPlace }: AvailablePlacesProps) => {
           throw new Error("Failed to fetch places");
         }
 
-        setAvailablePlaces(resData);
+        // gets the current position of the user. Takes some time to execute
+        // cannot use async await with this function
+        navigator.geolocation.getCurrentPosition((position) => {
+          const sortedPlaces: Place[] = sortPlacesByDistance(
+            resData,
+            position.coords.latitude,
+            position.coords.longitude
+          );
+
+          setAvailablePlaces(sortedPlaces);
+          setIsFetching(false);
+        });
       } catch (error: unknown) {
         // handling an error response
         setError(error as Error);
-      }
-
-      setIsFetching(false);
+        setIsFetching(false);
+      }      
     };
 
     fetchPlaces();
   }, []);
 
   if (error) {
-    return <ErrorComponent title="An error occurred!" message={error.message} />
+    return (
+      <ErrorComponent title="An error occurred!" message={error.message} />
+    );
   }
 
   return (
