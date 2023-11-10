@@ -4,6 +4,7 @@ import Places from "./Places";
 import { Place } from "./Places";
 import ErrorComponent from "./ErrorComponent";
 import { sortPlacesByDistance } from "../loc";
+import { fetchAvailablePlaces } from "../http";
 
 interface AvailablePlacesProps {
   onSelectPlace: (place: Place) => void;
@@ -22,18 +23,13 @@ const AvailablePlaces = ({ onSelectPlace }: AvailablePlacesProps) => {
       setIsFetching(true);
 
       try {
-        const response = await fetch("http://localhost:8080/places");
-        const resData = await response.json();
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch places");
-        }
+        const places: Place[] = await fetchAvailablePlaces();
 
         // gets the current position of the user. Takes some time to execute
         // cannot use async await with this function
         navigator.geolocation.getCurrentPosition((position) => {
           const sortedPlaces: Place[] = sortPlacesByDistance(
-            resData,
+            places,
             position.coords.latitude,
             position.coords.longitude
           );
