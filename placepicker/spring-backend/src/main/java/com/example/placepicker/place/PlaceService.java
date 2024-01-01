@@ -18,4 +18,8 @@ public class PlaceService {
     public List<Place> getUserPlaces() throws IOException {
         return placeRepository.getUserPlaces();
     }
+
+    public boolean addUserPlaces(List<Place> places) throws IOException {
+        return placeRepository.addUserPlaces(places);
+    }
 }

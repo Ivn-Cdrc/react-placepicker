@@ -25,7 +25,8 @@ const AvailablePlaces = ({ onSelectPlace }: AvailablePlacesProps) => {
       try {
         const places: Place[] = await fetchAvailablePlaces();
 
-        // gets the current position of the user. Takes some time to execute
+        // gets the current position of the user and sorts based on proximity
+        // Takes some time to execute
         // cannot use async await with this function
         navigator.geolocation.getCurrentPosition((position) => {
           const sortedPlaces: Place[] = sortPlacesByDistance(

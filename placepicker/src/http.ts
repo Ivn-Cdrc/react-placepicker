@@ -1,3 +1,5 @@
+import { Place } from "./components/Places";
+
 // every function declared with async will return a promise
 export const fetchAvailablePlaces = async () => {
   const response = await fetch("http://localhost:8080/places");
@@ -9,3 +11,24 @@ export const fetchAvailablePlaces = async () => {
 
   return resData;
 };
+
+export const updateUserPlaces = async (places: Place[]) => {
+  console.log(JSON.stringify(places));
+
+  // fetch can be also be used for POST requests
+  const response = await fetch('http://localhost:8080/user-places', {
+    method: 'POST',
+    body: JSON.stringify({places: places}),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+
+  const resData = await response.json();
+
+  if(!response.ok) {
+    throw new Error('Failed to update user data.')
+  }
+
+  return resData.message;
+}

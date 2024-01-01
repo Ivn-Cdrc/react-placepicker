@@ -8,12 +8,24 @@ import logoImg from "./assets/logo.png";
 import AvailablePlaces from "./components/AvailablePlaces";
 
 import { Place } from "./components/Places.jsx";
+import { updateUserPlaces } from "./http";
+import ErrorComponent from "./components/ErrorComponent";
 
 function App() {
   const selectedPlace = useRef<Place | null>(null);
 
   const [userPlaces, setUserPlaces] = useState<Place[]>([]);
+  const [errorUpdatingPlaces, setErrorUpdatingPlaces] = useState<string>("");
+
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+
+  const getErrorMessage = (error: unknown) => {
+    if (error instanceof Error) {
+      return error.message;
+    } else {
+      return String(error);
+    }
+  };
 
   const handleStartRemovePlace = (place: Place) => {
     setModalIsOpen(true);
@@ -24,7 +36,13 @@ function App() {
     setModalIsOpen(false);
   };
 
-  const handleSelectPlace = (selectedPlace: Place) => {
+  const handleSelectPlace = async (selectedPlace: Place) => {
+    // alternative way to handle request is to execute it first, then update state
+    // however you will need to show an updating or in progress state
+    // await updateUserPlaces([selectedPlace, ...userPlaces]);
+
+    // checking if place already exists in previously picked places
+    // optimistic updating. Updating the local state before sending the request
     setUserPlaces((prevPickedPlaces) => {
       if (!prevPickedPlaces) {
         prevPickedPlaces = [];
@@ -34,6 +52,16 @@ function App() {
       }
       return [selectedPlace, ...prevPickedPlaces];
     });
+
+    // state update will not immediately be available
+    // it will only be available after the component function re-executes
+    try {
+      await updateUserPlaces([selectedPlace, ...userPlaces]);
+    } catch (error: unknown) {
+      // set to previous state if the request fails
+      setUserPlaces(userPlaces);
+      setErrorUpdatingPlaces("failed to update places.");
+    }
   };
 
   const handleRemovePlace = useCallback(async function handleRemovePlace() {
@@ -44,8 +72,22 @@ function App() {
     setModalIsOpen(false);
   }, []);
 
+  function handleError()  {
+    setErrorUpdatingPlaces("");
+  }
+
   return (
     <Fragment>
+      <Modal open={errorUpdatingPlaces != ""} onClose={handleError}>
+        {errorUpdatingPlaces != "" && (
+          <ErrorComponent
+            title="An error occured!"
+            message={errorUpdatingPlaces}
+            onConfirm={handleError}
+          />
+        )}
+      </Modal>
+
       <Modal open={modalIsOpen} onClose={handleStopRemovePlace}>
         <DeleteConfirmation
           onCancel={handleStopRemovePlace}

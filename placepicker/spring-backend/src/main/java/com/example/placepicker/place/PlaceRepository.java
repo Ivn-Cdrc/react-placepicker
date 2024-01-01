@@ -47,4 +47,28 @@ public class PlaceRepository {
 
         return userPlacesList;
     }
+
+    // returns true if successfully added place, else return false
+    public boolean addUserPlaces(List<Place> places) throws IOException {
+
+        for(Place place : places) {
+            System.out.println(place.title());
+        }
+
+        File file = userPlacesResource.getFile();
+        //List<Place> userPlaces = getUserPlaces();
+
+        mapper.writeValue(new File(file.getPath()), places);
+
+        return true;
+
+        // check for duplicates and other conditions if needed
+        // if(userPlaces.contains(place)) {
+        //     return false;
+        // } else {
+        //     userPlaces.add(place);
+        //     mapper.writeValue(file, userPlaces);
+        //     return true;
+        // }
+    }
 }
