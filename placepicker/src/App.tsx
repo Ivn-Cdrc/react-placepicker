@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { Fragment } from "react";
 
 import Places from "./components/Places";
@@ -8,16 +8,34 @@ import logoImg from "./assets/logo.png";
 import AvailablePlaces from "./components/AvailablePlaces";
 
 import { Place } from "./components/Places.jsx";
-import { updateUserPlaces } from "./http";
+import { fetchUserPlaces, updateUserPlaces } from "./http";
 import ErrorComponent from "./components/ErrorComponent";
 
 function App() {
   const selectedPlace = useRef<Place | null>(null);
 
   const [userPlaces, setUserPlaces] = useState<Place[]>([]);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>();
+
   const [errorUpdatingPlaces, setErrorUpdatingPlaces] = useState<string>("");
 
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchPlaces = async () => {
+      setIsFetching(true);
+
+      try {
+        const places = await fetchUserPlaces();
+        setUserPlaces(places);
+      } catch (error: unknown) {
+        setError(error as Error);
+      }
+
+      setIsFetching(false);
+    };
+  }, []);
 
   const getErrorMessage = (error: unknown) => {
     if (error instanceof Error) {
@@ -120,12 +138,19 @@ function App() {
         </p>
       </header>
       <main>
-        <Places
-          title="I'd like to visit ..."
-          fallbackText="Select the places you would like to visit below."
-          places={userPlaces}
-          onSelectPlace={handleStartRemovePlace}
-        />
+        {error && (
+          <ErrorComponent title="An error occurred!" message={error.message} />
+        )}
+        {!error && (
+          <Places
+            title="I'd like to visit ..."
+            fallbackText="Select the places you would like to visit below."
+            isLoading={isFetching}
+            loadingText="Fetching your places..."
+            places={userPlaces}
+            onSelectPlace={handleStartRemovePlace}
+          />
+        )}
 
         <AvailablePlaces onSelectPlace={handleSelectPlace} />
       </main>
