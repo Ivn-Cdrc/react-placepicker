@@ -64,15 +64,31 @@ function App() {
     }
   };
 
-  const handleRemovePlace = useCallback(async function handleRemovePlace() {
-    setUserPlaces((prevPickedPlaces) =>
-      prevPickedPlaces.filter((place) => place.id !== selectedPlace.current?.id)
-    );
+  const handleRemovePlace = useCallback(
+    async function handleRemovePlace() {
+      setUserPlaces((prevPickedPlaces) =>
+        prevPickedPlaces.filter(
+          (place) => place.id !== selectedPlace.current?.id
+        )
+      );
 
-    setModalIsOpen(false);
-  }, []);
+      try {
+        // performing optimistic updating by updating state, then sending http request
+        await updateUserPlaces(
+          userPlaces.filter((place) => place.id !== selectedPlace.current?.id)
+        );
+      } catch (error: unknown) {
+        // roll back the change on request failure
+        setUserPlaces(userPlaces);
+        setErrorUpdatingPlaces("Failed to delete place.");
+      }
 
-  function handleError()  {
+      setModalIsOpen(false);
+    },
+    [userPlaces]
+  );
+
+  function handleError() {
     setErrorUpdatingPlaces("");
   }
 
@@ -81,7 +97,7 @@ function App() {
       <Modal open={errorUpdatingPlaces != ""} onClose={handleError}>
         {errorUpdatingPlaces != "" && (
           <ErrorComponent
-            title="An error occured!"
+            title="An error occurred!"
             message={errorUpdatingPlaces}
             onConfirm={handleError}
           />

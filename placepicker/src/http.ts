@@ -15,9 +15,9 @@ export const fetchAvailablePlaces = async () => {
 export const updateUserPlaces = async (places: Place[]) => {
   console.log(JSON.stringify(places));
 
-  // fetch can be also be used for POST requests
+  // fetch can be also be used for PUT requests
   const response = await fetch('http://localhost:8080/user-places', {
-    method: 'POST',
+    method: 'PUT',
     body: JSON.stringify({places: places}),
     headers: {
       'Content-Type': 'application/json'
